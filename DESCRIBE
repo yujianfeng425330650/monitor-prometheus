@@ -2,7 +2,7 @@
 # 此套架构中所涉及的服务如下:
 prometheus:监控工具,本质是一个时序数据库,以http方式输出数据指标
 cadvisor:google出品,监控容器内部指标的工具
-node-exporter:获取主机自身指标,如cpu,men,disk,net,filesystem等,有替代方案
+node-exporter:获取主机自身指标,如cpu,men,disk,net,filesystem等,有替代方案,镜像需重构
 mysqld-exporter:探测mysql数据库内部指标的工具
 blackbox-exporter:探测网络协议,如http,icmp,dns等,本文实现简单的web检测,复杂的可以自行研究
 grafana:监控方案,前端ui工具使界面更加直接美观
