@@ -1,0 +1,8 @@
+# dadago静态页面检测
+ALERT dadago_url_check
+  IF (probe_http_status_code{job="dadago_url_check",instance=~".+"}) != 200
+  ANNOTATIONS {
+        summary="Static Page of {{ $labels.instance }} return error http code,maybe service down",
+        description="This http code return value is {{ $value }}",
+ }
+

@@ -1,0 +1,28 @@
+# containers cpu usage[five minutes] of jenkins(test)
+ALERT container_cpu_usage_application1_jenkins
+  IF (sum(rate(container_cpu_usage_seconds_total{instance="container-application1",name="jenkins"}[5m])) by(job,instance,name)*100) > 200
+  ANNOTATIONS {
+        description = "This node's container name is jenkins and last value is {{ $value }}",
+        summary = "Instance {{ $labels.instance  }} cpu usage is too high, what's the fuck!"
+  }
+# container cpu usage[five minutes] of dadago cluster app service(prod)
+AlERT container_cpu_usage_dadago_app
+  IF ((sum(rate(container_cpu_usage_seconds_total{instance=~"container.*",name=~"prod_app.*"}[5m])) by(job,instance,name))*100) > 200
+  ANNOTATIONS {
+        description = "This node's container name is app and last value is {{ $value }}",
+        summary = "Instance {{ $labels.instance  }} cpu usage is too high, what's the fuck!"
+  }
+# container cpu usage[five minutes] of dadago cluster operation service(prod)
+ALERT container_cpu_usage_dadago_operation
+  IF ((sum(rate(container_cpu_usage_seconds_total{instance=~"container.*",name=~"prod_oper.*"}[5m])) by(job,instance,name))*100) > 200
+  ANNOTATIONS {
+        description = "This node's container name is operate and last value is {{ $value }}",
+        summary = "Instance {{ $labels.instance  }} cpu usage is too high, what's the fuck!"
+  }
+# container cpu usage[five mintues] of dadago cluster settlement system(prod)
+ALERT container_cpu_usage_dadago_settlement
+  IF ((sum(rate(container_cpu_usage_seconds_total{instance=~"container.*",name=~"prod_set.*"}[5m])) by(instance,name))*100) > 200
+  ANNOTATIONS {
+	description = "This node's container name is settlement system and last value is {{ $value }}",
+	summary = "Instance {{ $labels.instance }} cpu usage is too high,what's the fuck!"
+  }

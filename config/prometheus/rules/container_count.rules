@@ -1,0 +1,37 @@
+#count of container frontserver,prod
+ALERT container_count_front
+  IF (count by(instance)(rate(container_last_seen{name=~".+",instance="container-frontserver"}[1m]))) != 13
+  ANNOTATIONS {
+	description = "frontserver节点容器数量有变化，最后的值为{{ $value }}",
+	summary = "实例 {{ $labels.instance  }} 有容器挂了或新增，请及时查看解决!"
+  }
+# conut of container application1,test
+ALERT container_count_app1
+  IF (count by(instance)(rate(container_last_seen{name=~".+",instance="container-application1"}[1m]))) != 23
+  ANNOTATIONS {
+        description = "application1节点容器数量有变化，最后的值为{{ $value }}",
+        summary = "实例 {{ $labels.instance  }} 有容器挂了或新增，请及时查看解决!"
+  }
+# count of container application2,cluster of prod
+ALERT container_count_app2
+  IF (count by(instance)(rate(container_last_seen{name=~".+",instance="container-application2"}[1m]))) != 12
+  ANNOTATIONS {
+        description = "application2节点容器数量有变化，最后的值为{{ $value }}",
+        summary = "实例 {{ $labels.instance  }} 有容器挂了或新增，请及时查看解决!"
+  }
+# count of container yshdb,cluster of prod
+ALERT container_count_yshdb
+  IF (count by(instance)(rate(container_last_seen{name=~".+",instance="container-dbserver-ysh"}[1m]))) != 13
+  ANNOTATIONS {
+        description = "dbserver节点容器数量有变化，最后的值为{{ $value }}",
+        summary = "实例 {{ $labels.instance  }} 有容器挂了或新增，请及时查看解决!"
+  }
+# count of container elkserver,elk cluster(single)
+ALERT container_count_elkserver
+  IF (count by(instance)(rate(container_last_seen{name=~".+",instance="container-elkserver"}[1m]))) != 8
+  ANNOTATIONS {
+        description = "elkserver节点容器数量有变化，最后的值为{{ $value }}",
+        summary = "实例 {{ $labels.instance  }} 有容器挂了或新增，请及时查看解决!"
+  }
+
+

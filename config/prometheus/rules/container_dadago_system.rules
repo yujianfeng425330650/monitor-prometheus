@@ -1,0 +1,80 @@
+# 以下规则用来检测dadago集群中容器是否存活(app,operate,wms,scheduler,cms,settlement),此规则适用于正式环境dadago集群容器！
+# 部分规则用来检测jenkins，rabbitmq，redis容器是否存活，适用于正式环境、测试环境、开发环境。
+
+# 正式环境容器(app)检测，节点(front,app2,dbserver) 
+ALERT container_alive_dadago_app
+  IF (count(container_last_seen{instance=~"container.*",name=~"prod_app.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+	description = "app接口异常，竟然挂了!",
+	summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式环境容器(operation)检测，节点(front,dbserver)
+ALERT container_alive_dadago_operation
+  IF (count(container_last_seen{instance=~"container.*",name=~"prod_oper.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "operation容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式环境容器(wms)检测，节点(front,dbserver[wms集群问题，暂时从dbserver中剔除])
+ALERT container_alive_dadago_wms
+  IF (count(container_last_seen{instance=~"container.*",name=~"prod_wms.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "wms容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式环境容器(cms)检测，节点(front,dbserver[cms集群问题，暂时从dbserver中剔除])
+ALERT container_alive_dadago_cms
+  IF (count(container_last_seen{instance=~"container.*",name=~"prod_cms.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "cms容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式环境容器(scheduler)检测，节点(front)
+ALERT container_alive_dadago_scheduler
+  IF (count(container_last_seen{instance=~"container.*",name=~"prod_sche.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "scheduler容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式环境容器(settlement系统)检测，节点(front)
+ALERT container_alive_dadago_settlement
+  IF (count(container_last_seen{instance="container-frontserver",name=~"prod_set.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "settlement系统容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式、测试、开发环境集群缓存redis容器检测
+ALERT container_alive_dadago_redis_v1
+  IF (count(container_last_seen{instance="container-frontserver",name=~"prod_redis.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+	description = "frontserver节点redis容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+ALERT container_alive_dadago_redis
+  IF (count(container_last_seen{instance=~"container.*",name=~"redis.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+	description = "redis容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式、测试、开发环境jenkins容器检测
+ALERT container_alive_dadago_jenkins
+  IF (count(container_last_seen{instance=~"container.*",name=~"jenkins.*"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "jenkins容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }
+
+# 正式、测试、开发环境集群通信组件rabbitmq容器检测
+ALERT container_alive_dadago_rabbitmq
+  IF (count(container_last_seen{instance=~"container.*",name="rabbitmq"})by(instance,name)) != 1
+  ANNOTATIONS {
+        description = "rabbitmq容器异常，竟然挂了!",
+        summary = "实例:{{ $labels.instance }}有问题，请及时查看"
+  }

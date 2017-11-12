@@ -1,0 +1,29 @@
+# monitor system infomation,such as cpu mem disk,and so on.
+# cpu load rules,5 minutes percent usage more than 90%
+ALERT host_cpu_usage
+  IF (100 *  (1 - avg by(instance)(irate(node_cpu{mode='idle'}[5m])))) > 90
+  ANNOTATIONS {
+	summary = "实例:{{ $labels.instance }} CPU usage is too high",
+	description = "This node's CPU usage value is {{ $value }}%", 
+  }
+# cpu load with five minutes
+ALERT host_cpu_load5
+  IF (node_load5) > 4
+  ANNOTATIONS {
+	sumary = "实例：{{ $labels.instance }} five minutes cpu load is too high",
+	description = "This node's CPU 5分钟负载值为{{ $value }}",
+  }
+# memory of available,free memory size is less than 2G
+ALERT host_mem_available
+  IF (min by(instance)(node_memory_MemAvailable/(1024*1024*1024))) < 2
+  ANNOTATIONS {
+	summary="实例:{{ $labels.instance }} available memory is not enough",
+	description="This node's available memory value is {{ $value }}G",
+ }
+# free space of disk,disk free size is less than 20G
+ALERT host_disk_free
+  IF (min by(instance)(node_filesystem_free{fstype="rootfs",mountpoint="/"}/(1024*1024*1024))) < 20
+  ANNOTATIONS {
+	summary="实例:{{ $labels.instance }} Disk free space is not enough",
+	description="This node's disk free space value is {{ $value }}G",
+  }

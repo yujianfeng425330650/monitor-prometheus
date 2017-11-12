@@ -1,0 +1,121 @@
+# my global config
+global:
+  scrape_interval:     30s # 每30秒到各exporter抓取一次数据，默认1分钟
+  evaluation_interval: 15s # 每15秒评估一次报警规则
+  scrape_timeout: 10s      # 10s获取不到各exporter接口的数据，默认超时
+
+  external_labels:         # 和外部系统(remote storage，alertmanager)通信时，将以下标签附加到时间序列或警报中
+      monitor: '普罗米修斯监控报警'
+
+alerting:
+  alertmanagers:           # prometheus收集到的数据触发rules，通过此接口发送信息到alertmanager组件中
+  - static_configs:
+    - targets:
+      - 10.28.205.193:9093
+    scheme: http
+    timeout: 10s
+
+rule_files:                # 加载以下规则，并根据evaluation_interrval全局参数周期性的检查
+  - /etc/prometheus/rules/*.rules
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['10.28.205.193:49090']
+        labels:
+          instance: prometheus
+
+  # The job name is collectd system of dadago luster
+  - job_name: 'system'
+    static_configs:
+      - targets: ['10.28.60.246:9100']
+        labels:
+          instance: system-yshdb
+      - targets: ['10.25.93.229:9100']
+        labels:
+          instance: system-application1
+      - targets: ['10.28.205.193:9100']
+        labels:
+          instance: system-application2
+      - targets: ['10.26.67.140:9100']
+        labels:
+          instance: system-frontserver
+      - targets: ['10.174.88.200:9100']
+        labels:
+          instance: system-elkserver
+      - targets: ['10.31.148.84:9100']
+        labels:
+          instance: system-wordapp
+      - targets: ['10.31.144.146:9100']
+        labels:
+          instance: system-worddb
+    params:
+      collect[]:
+        - cpu
+        - meminfo
+        - diskstats
+        - netdev
+        - netstat
+        - filefd
+        - filesystem
+        - xfs
+
+  # The job name is collectd mysql infomation(local and rds)
+  - job_name: 'mysql'
+    static_configs:
+      - targets: ['10.28.205.193:9104']
+        labels:
+          instance: mysql-aliyun-rds
+      - targets: ['10.28.60.246:9104']
+        labels:
+          instance: mysql-local-ysh
+      
+  # The job name is collectd contanier infomation(dadago cluster)
+  - job_name: 'container'
+    static_configs:
+      - targets: ['10.25.93.229:8080']
+        labels:
+          instance: container-application1
+      - targets: ['10.28.205.193:8080']
+        labels:
+          instance: container-application2
+      - targets: ['10.28.60.246:8080']
+        labels:
+          instance: container-dbserver-ysh
+      - targets: ['10.26.67.140:8080']
+        labels:
+          instance: container-frontserver
+      - targets: ['10.174.88.200:8080']
+        labels:
+          instance: container-elkserver
+      - targets: ['10.31.148.84:8080']
+        labels:
+          instance: container-wordapp
+      - targets: ['10.31.144.146:8080']
+        labels:
+          instance: container-worddb
+
+  # The job name is check url
+  - job_name: 'dadago_url_check'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://www.dadago.cn
+        - https://www.dadago.cn/html/atlas_index.html
+        - http://operation.dadago.cn
+        - http://wms.dadago.cn
+        - http://settlement.dadago.cn
+        - http://partner.dadago.cn
+    relabel_configs:
+        - source_labels: [__address__]
+          target_label: __param_target
+        - source_labels: [__param_target]
+          target_label: instance
+        - target_label: __address__
+          replacement: 10.174.88.200:49115
+   
