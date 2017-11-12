@@ -7,3 +7,4 @@
 ![image](https://github.com/yujianfeng425330650/monitor-prometheus/blob/master/picture/alermanager.png)
 ![image](https://github.com/yujianfeng425330650/monitor-prometheus/blob/master/picture/grafana.png)
 ![image](https://github.com/yujianfeng425330650/monitor-prometheus/blob/master/picture/prometheus.png)
+![image](https://github.com/yujianfeng425330650/monitor-prometheus/blob/master/picture/alert-rules.png)
