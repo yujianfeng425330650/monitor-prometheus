@@ -1,0 +1,7 @@
+#build node-exporter docker images
+# use default image with docker-compose has a problem
+
+# build command
+# switch to current directory and run command
+
+docker build  -t docker.youshehui.com/monitor/node-exporter:0.15.0-m .
