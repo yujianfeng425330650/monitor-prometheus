@@ -36,6 +36,16 @@ services:
     ports:
       - 0.0.0.0:9100:9100
 
+  blackbox-exporter:
+    image: docker.youshehui.com/monitor/blackbox-exporter:0.10.0
+    container_name: blackbox-export-http
+    restart: always
+    volumes:
+      - /srv/docker/blackbox-exporter/conf/config.yml:/etc/blackbox_exporter/config.yml
+    ports:
+      - 0.0.0.0:9115:9115
+    network_mode: "bridge"
+
   prometheus-server:
     image: docker.youshehui.com/monitor/prometheus:1.8.0
     container_name: prometheus-metric-server
