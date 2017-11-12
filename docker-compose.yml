@@ -1,0 +1,80 @@
+version: '2'
+services:
+  cadvisor:
+    image: docker.youshehui.com/monitor/cadvisor:0.25.0
+    container_name: cadvisor-container
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+      - /dev/disk:/dev/disk:ro
+    network_mode: "bridge"
+    ports:
+      - 0.0.0.0:8080:8080
+
+  mysqld-exporter:
+    image: docker.youshehui.com/monitor/mysqld-exporter:0.10.0
+    container_name: rds-mysqld-exporter
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - 0.0.0.0:9104:9104
+    environment:
+      DATA_SOURCE_NAME: "dbuser:dbpassword@(dbhost:3306)/performance_schema"
+
+  node-exporter:
+    image: docker.youshehui.com/monitor/node-exporter:0.15.0-m
+    container_name: node-export-system
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro,rslave
+    network_mode: "host"
+    ports:
+      - 0.0.0.0:9100:9100
+
+  prometheus-server:
+    image: docker.youshehui.com/monitor/prometheus:1.8.0
+    container_name: prometheus-metric-server
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - 0.0.0.0:9090:9090
+    volumes:
+      - /srv/docker/prometheus/conf/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /srv/docker/prometheus/data/:/prometheus/
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+
+  alertmanger:
+    image: docker.youshehui.com/monitor/alertmanager:0.9.1
+    container_name: alertmanager-prometheus
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - 0.0.0.0:9093:9093
+    volumes:
+      - /srv/docker/alertmanager/conf/config.yml:/etc/alertmanager/config.yml
+      - /srv/docker/alertmanager/data:/alertmanager
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    depends_on:
+      - prometheus-server
+
+  grafana:
+    image: docker.youshehui.com/monitor/grafana:4.6.0-beat2
+    container_name: grafana-server
+    restart: always
+    network_mode: "bridge"
+    ports:
+      - 0.0.0.0:3000:3000
+    volumes:
+      - /srv/docker/grafana/data:/var/lib/grafana
+      - /srv/docker/grafana/conf:/etc/grafana
+      #- /srv/docker/grafana/log:/var/log/grafana
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: "ui login password"
+    depends_on:
+      - prometheus-server
