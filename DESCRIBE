@@ -9,3 +9,4 @@ grafana:监控方案,前端ui工具使界面更加直接美观
 alert-manager:实现监控方案报警的工具,可以集成email,webhooks,钉钉等工具
 其他内的监控插件,如监控redis,rabbitmq,mongodb,haproxy等,可以自行到dockerhub上获取
 注:所需镜像采用企业内部私服镜像,可以到docker hub上找到所需镜像,docker search 关键字
+config/prometheus/rules目录下为prometheus报警规则文件
