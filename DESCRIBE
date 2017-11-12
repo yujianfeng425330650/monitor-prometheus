@@ -3,8 +3,9 @@
 prometheus:监控工具,本质是一个时序数据库,以http方式输出数据指标
 cadvisor:google出品,监控容器内部指标的工具
 node-exporter:获取主机自身指标,如cpu,men,disk,net,filesystem等,有替代方案,镜像需重构
-mysqld-exporter:探测mysql数据库内部指标的工具
+mysqld-exporter:探测mysql数据库内部指标的工具,数据库授权用户方法,docker hub搜寻相应镜像即可
 blackbox-exporter:探测网络协议,如http,icmp,dns等,本文实现简单的web检测,复杂的可以自行研究
 grafana:监控方案,前端ui工具使界面更加直接美观
 alert-manager:实现监控方案报警的工具,可以集成email,webhooks,钉钉等工具
 其他内的监控插件,如监控redis,rabbitmq,mongodb,haproxy等,可以自行到dockerhub上获取
+注:所需镜像采用企业内部私服镜像,可以到docker hub上找到所需镜像,docker search 关键字
